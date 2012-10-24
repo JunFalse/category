@@ -115,6 +115,20 @@ class category {
         }
         return $ary;
     }
+    
+    public function exists ($id) {
+        $ary = $this->getOptgroupArray();
+        foreach ($ary as  $group) {
+            foreach ($group['options'] as $item) {
+                if (isset($item['id'])) {
+                    if ($item['id'] == $id) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
 
 class categoryForm {

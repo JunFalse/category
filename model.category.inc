@@ -1,7 +1,9 @@
 <?php
 
+include_once "coslib/rb_helpers.php";
 include_once "coslib/form_helpers.php";
 RB::connect();
+
 
 class category {
     
@@ -16,39 +18,36 @@ class category {
     }
     
     public function add ($values) {
-        $bean = RB::getBean($this->table);   
-        $bean = RB::arrayToBean($bean, $values);
-        return R::store($bean);
+        
+        $db = new db();
+        return $db->insert($this->table, $values);
+
     }
     
     public function delete ($id) {
-        $beans = R::find($this->table, "  id = $id ");
-        return R::trashAll($beans);       
+        return dbQ::setDelete($this->table)->filter('id =', $id)->exec();
+      
     }
     
     public function update ($id, $values) {
-        $bean = RB::getBean($this->table, 'id', $id);
-        $bean->title = $values ['title'];
-        return R::store($bean);
+        return dbQ::setUpdate($this->table)->setUpdateValues($values)->filter('id=', $id)->exec();
+
     }
     
     public function get($id) {
-        $row =  R::getRow("SELECT * FROM  " . $this->table . " WHERE `id` = $id");
-        return $row;
+        return dbQ::setSelect($this->table)->filter('id = ', $id)->fetchSingle();
     }
     
     public function getLevel($id) {
-        $rows =  R::getAll("SELECT * FROM  " . $this->table . " WHERE `parent` = $id");
-        return $rows;
+        return dbQ::setSelect($this->table)->filter('parent =', $id)->fetch();
     }
     
     public function getChildren ($parent) {
-        $rows =  R::getAll("SELECT * FROM  " . $this->table . " WHERE `parent` = $parent");
-        return $rows;
+        return dbQ::setSelect($this->table)->filter('parent =', $parent)->fetch();
     }
     
     public function getParent($id) {
-        $row =  R::getRow("SELECT `parent` FROM  " . $this->table . " WHERE `id` = $id");
+        $row = dbQ::setSelect($this->table)->filter('id =', $id)->fetchSingle();
         if (empty($row)) {
             return 0;
         }
@@ -67,6 +66,7 @@ class category {
     
     public function getTrailHuman ($id) {
         $trail = array_reverse($this->getTrail($id));
+
         $ary = array ();
         foreach ($trail as $key => $val) {
             $row = $this->get($val);
@@ -79,9 +79,9 @@ class category {
     }
     
     public function getTrailHTML ($id) {
-        $trail = $this->getTrailHuman($id);
-        $str = '';
-        
+'';
+        $trail = $this->getTrailHuman($id);      
+        $str = '';    
         if (count($trail) == 0) {
             return "Top";
         }
@@ -93,9 +93,9 @@ class category {
         foreach ($trail as $row) {            
             $num--;
             if (!$num) {
-                $str.=  " << " . $row['title'];
+                $str.=  " &lt;&lt; " . $row['title'];
             } else {
-                $str.=  " << " . html::createLink($this->options['path'] . "/admin/add_sub/$row[id]", html::specialEncode($row['title']));
+                $str.=  " &lt;&lt; " . html::createLink($this->options['path'] . "/admin/add_sub/$row[id]", html::specialEncode($row['title']));
             }
         }   
         return $str;
@@ -136,7 +136,8 @@ class categoryForm {
         echo formHelpers::confirmDeleteForm('category_delete', lang::translate('category_form_delete_legend'));
     }
     
-    public function formUpdate ($values) {       
+    public function formUpdate ($values) {
+        $_POST = html::specialEncode($_POST);
         $f = new html();
         $f->init($values, 'category_update');
         $f->formStart();
@@ -159,15 +160,16 @@ class categoryControl {
     
     public function addParent () {
 
-        headline_message(lang::translate('category_add_title'));
+        headline_message(lang::translate('category_add_title'));       
+        
         $f = new categoryForm();
-
         $c = new category(self::$options);
         
-        $trail = $c->getTrailHTML(0);       
+        $trail = $c->getTrailHTML(0);     
         echo $trail;
         
         if (isset($_POST['category_add'])) {
+            $_POST = html::specialDecode($_POST);
             
             $values = db::prepareToPostArray(array ('title'));
             $values['sort'] = 255;
@@ -190,13 +192,12 @@ class categoryControl {
                 'field' => 'sort',
                 'where_sql' => "`parent` = 0 "
              );
-        
 
         function jquerysort_template_item ($id, $text) {
             $edit = html::createLink(categoryControl::$options['path'] . "/admin/edit_cat/$id", lang::system('edit'));
             $del = html::createLink(categoryControl::$options['path']  . "/admin/delete_cat/$id", lang::system('delete'));
             $sub = html::createLink(categoryControl::$options['path']  ."/admin/add_sub/$id", lang::translate('category_add_sub'));
-            return html::specialEncode($text) . " " . $edit . MENU_SUB_SEPARATOR . $del . MENU_SUB_SEPARATOR . $sub;
+            return $text  . " " . $edit . MENU_SUB_SEPARATOR . $del . MENU_SUB_SEPARATOR . $sub;
         } 
 
         include_module('jquerysort');
@@ -208,6 +209,7 @@ class categoryControl {
     public function addSub () {
         headline_message(lang::translate('category_add_sub_title'));
 
+
         $parent = URI::getInstance()->fragment(3);
         $f = new categoryForm();
         
@@ -216,7 +218,7 @@ class categoryControl {
         echo $trail;
         
         if (isset($_POST['category_add'])) {
-            
+            $_POST = html::specialDecode($_POST);
             $values = db::prepareToPostArray(array ('title'));
             $values['sort'] = 255;
             $values['parent'] = $parent;
@@ -295,7 +297,7 @@ class categoryControl {
         echo $trail;
 
         if (isset($_POST['category_update'])) {
-
+            $_POST = html::specialDecode($_POST);
             $values = db::prepareToPostArray(array ('title'));
             $res = $c->update($id, $values);
             if ($res) {

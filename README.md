@@ -17,4 +17,19 @@ the folloing in blog/admin/conf.php:
     // the web base path to the module
     $options['category_base_path'] = '/blog'; 
 
+### Redbeans sets options for utf8 which can ruin you utf8
+
+To change this:  
+
+alter table shop_category change title title varchar(255) DEFAULT NULL;
+
+### Create able manual
+
+CREATE TABLE `shop_category` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `sort` tinyint(3) unsigned DEFAULT NULL,
+  `parent` tinyint(3) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
 

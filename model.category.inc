@@ -1,0 +1,315 @@
+<?php
+
+include_once "coslib/form_helpers.php";
+RB::connect();
+
+class category {
+    
+    public $table = null;
+    public function __construct($options) {
+        $this->table = $options['table'];
+        $this->options = $options;
+    }
+    
+    public function setTable ($table) {
+        $this->table = $table;
+    }
+    
+    public function add ($values) {
+        $bean = RB::getBean($this->table);   
+        $bean = RB::arrayToBean($bean, $values);
+        return R::store($bean);
+    }
+    
+    public function delete ($id) {
+        $beans = R::find($this->table, "  id = $id ");
+        return R::trashAll($beans);       
+    }
+    
+    public function update ($id, $values) {
+        $bean = RB::getBean($this->table, 'id', $id);
+        $bean->title = $values ['title'];
+        return R::store($bean);
+    }
+    
+    public function get($id) {
+        $row =  R::getRow("SELECT * FROM  " . $this->table . " WHERE `id` = $id");
+        return $row;
+    }
+    
+    public function getLevel($id) {
+        $rows =  R::getAll("SELECT * FROM  " . $this->table . " WHERE `parent` = $id");
+        return $rows;
+    }
+    
+    public function getChildren ($parent) {
+        $rows =  R::getAll("SELECT * FROM  " . $this->table . " WHERE `parent` = $parent");
+        return $rows;
+    }
+    
+    public function getParent($id) {
+        $row =  R::getRow("SELECT `parent` FROM  " . $this->table . " WHERE `id` = $id");
+        if (empty($row)) {
+            return 0;
+        }
+        return $row['parent'];
+    }
+    
+    public function getTrail ($id) {
+        static $trail = array ();
+        $parent = $this->getParent($id);
+        if ($parent) { 
+            $trail[] = $parent;
+            $this->getTrail($parent);
+        } 
+        return $trail;
+    }
+    
+    public function getTrailHuman ($id) {
+        $trail = array_reverse($this->getTrail($id));
+        $ary = array ();
+        foreach ($trail as $key => $val) {
+            $row = $this->get($val);
+            $ary[] = $row;
+        }
+        if ($id != 0) {
+            $ary[] = $this->get($id);
+        }
+        return $ary;
+    }
+    
+    public function getTrailHTML ($id) {
+        $trail = $this->getTrailHuman($id);
+        $str = '';
+        
+        if (count($trail) == 0) {
+            return "Top";
+        }
+        
+        $str.=  html::createLink($this->options['path'] .  "/admin/add_cat", 'Top');       
+        $num = count($trail);
+
+        
+        foreach ($trail as $row) {            
+            $num--;
+            if (!$num) {
+                $str.=  " << " . $row['title'];
+            } else {
+                $str.=  " << " . html::createLink($this->options['path'] . "/admin/add_sub/$row[id]", html::specialEncode($row['title']));
+            }
+        }   
+        return $str;
+    }
+    
+    public function getOptgroupArray () { 
+        
+        $top = $this->getLevel(0);
+
+        $ary = array ();
+        foreach ($top as $parent) {
+            $set = array ();
+            $set['optgroup'] = $parent['title'];
+            $set['options'] = $this->getChildren($parent['id']);
+            $ary[] = $set;
+
+        }
+        return $ary;
+    }
+}
+
+class categoryForm {
+    
+    public function formAdd () {
+        $_POST = html::specialEncode($_POST);
+        $f = new html();
+        $f->init(null, 'category_add');
+        $f->formStart();
+        $f->legend(lang::translate('category_form_add_legend'));
+        $f->label('title', lang::translate('category_form_add_title'));
+        $f->text('title');
+        $f->submit('category_add', lang::translate('category_form_add_submit'));
+        $f->formEnd();
+        echo $f->getStr();
+    }
+    
+    public function formDelete () {
+        echo formHelpers::confirmDeleteForm('category_delete', lang::translate('category_form_delete_legend'));
+    }
+    
+    public function formUpdate ($values) {       
+        $f = new html();
+        $f->init($values, 'category_update');
+        $f->formStart();
+        $f->legend(lang::translate('category_form_update_legend'));
+        $f->label('title', lang::translate('category_form_title'));
+        $f->text('title', null);
+        $f->submit('category_update', lang::translate('category_form_update_submit'));
+        $f->formEnd();
+        echo $f->getStr();
+    }    
+}
+
+class categoryControl {
+    
+    public static $options = array ();
+    function __construct($options = null) {
+        self::$options = $options;
+
+    }
+    
+    public function addParent () {
+
+        headline_message(lang::translate('category_add_title'));
+        $f = new categoryForm();
+
+        $c = new category(self::$options);
+        
+        $trail = $c->getTrailHTML(0);       
+        echo $trail;
+        
+        if (isset($_POST['category_add'])) {
+            
+            $values = db::prepareToPostArray(array ('title'));
+            $values['sort'] = 255;
+            $values['parent'] = 0;
+            $res = $c->add($values);
+            if ($res) {
+                session::setActionMessage(lang::translate('category_add_action'));
+                http::locationHeader(self::$options['path'] . '/admin/add_cat');
+            } else {
+
+            }
+        }
+
+        echo $f->formAdd();
+
+        $options =
+            array (
+                'table' => self::$options['table'], 
+                'title' => 'title',
+                'field' => 'sort',
+                'where_sql' => "`parent` = 0 "
+             );
+        
+
+        function jquerysort_template_item ($id, $text) {
+            $edit = html::createLink(categoryControl::$options['path'] . "/admin/edit_cat/$id", lang::system('edit'));
+            $del = html::createLink(categoryControl::$options['path']  . "/admin/delete_cat/$id", lang::system('delete'));
+            $sub = html::createLink(categoryControl::$options['path']  ."/admin/add_sub/$id", lang::translate('category_add_sub'));
+            return html::specialEncode($text) . " " . $edit . MENU_SUB_SEPARATOR . $del . MENU_SUB_SEPARATOR . $sub;
+        } 
+
+        include_module('jquerysort');
+        $j = new jquerysort($options);
+        $j->setJs();
+        echo $j->getHTML();
+    }
+    
+    public function addSub () {
+        headline_message(lang::translate('category_add_sub_title'));
+
+        $parent = URI::getInstance()->fragment(3);
+        $f = new categoryForm();
+        
+        $c = new category(self::$options);
+        $trail = $c->getTrailHTML($parent);       
+        echo $trail;
+        
+        if (isset($_POST['category_add'])) {
+            
+            $values = db::prepareToPostArray(array ('title'));
+            $values['sort'] = 255;
+            $values['parent'] = $parent;
+            $res = $c->add($values);
+            if ($res) {
+                session::setActionMessage(lang::translate('category_add_sub_action'));
+                http::locationHeader($_SERVER['REQUEST_URI']);
+            } else {
+
+            }
+        }
+
+        echo $f->formAdd();
+        $options =
+            array (
+                'table' => self::$options['table'], 
+                'title' => 'title',
+                'field' => 'sort',
+                'where_sql' => "`parent` = $parent "
+             );
+
+        
+        function jquerysort_template_item ($id, $text) {
+            $edit = html::createLink(categoryControl::$options['path']  . "/admin/edit_cat/$id", lang::system('edit'));
+            $del = html::createLink(categoryControl::$options['path']  . "/admin/delete_cat/$id", lang::system('delete'));
+            if (config::getModuleIni('category_allow_sub')) {
+                $sub = MENU_SUB_SEPARATOR . html::createLink(categoryControl::$options['path']  . "/admin/add_sub/$id", lang::translate('category_add_sub'));
+            } else {
+                $sub = '';
+            }
+            return html::specialEncode($text) . " " . $edit . MENU_SUB_SEPARATOR . $del . $sub;
+        } 
+        
+        
+        include_module('jquerysort');
+        $j = new jquerysort($options);
+        $j->setJs();
+        echo $j->getHTML();
+    }
+    
+    public function deleteCat () {
+        headline_message(lang::translate('category_delete_title'));
+        $id = URI::getInstance()->fragment(3);
+
+        $f = new categoryForm();
+        $c = new category(self::$options);
+        
+        $trail = $c->getTrailHTML($id);       
+        echo $trail;
+        
+        if (isset($_POST['category_delete'])) {
+
+            $children = $c->getChildren($id);
+
+            if (!empty($children)) {
+                view_form_errors(lang::translate('category_error_has_children'));
+            } else {
+                $values = db::prepareToPostArray(array ('title'));
+                $res = $c->delete($id);
+                session::setActionMessage(lang::translate('category_deleted'));
+                http::locationHeader(self::$options['path'] . '/admin/add_cat');
+            }
+
+        }
+        echo $f->formDelete(); 
+    }
+    
+    public function editCat () {
+        headline_message(lang::translate('category_edit_title'));
+        $id = URI::getInstance()->fragment(3);
+
+        $f = new categoryForm();
+        $c = new category(self::$options);
+        
+        $trail = $c->getTrailHTML($id);       
+        echo $trail;
+
+        if (isset($_POST['category_update'])) {
+
+            $values = db::prepareToPostArray(array ('title'));
+            $res = $c->update($id, $values);
+            if ($res) {
+                session::setActionMessage(lang::translate('category_edit_action_message'));
+                http::locationHeader($_SERVER['REQUEST_URI']);
+            } else {
+                log::debug('Should not happen');
+            }
+
+        }
+
+        $values = $c->get($id);
+        $values = html::specialEncode($values);
+
+        echo $f->formUpdate($values);
+    }
+}

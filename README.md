@@ -12,7 +12,9 @@ the folloing in blog/admin/conf.php:
     <?php
 
     $options = array ();
-    $options['category_table'] = 'category';
-    $options['category_base_path'] = '/category'; 
+    // the database table (will be created per auto)
+    $options['category_table'] = 'blog_category';
+    // the web base path to the module
+    $options['category_base_path'] = '/blog'; 
 
 

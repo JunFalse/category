@@ -37,7 +37,7 @@ class category {
     }
     
     public function getLevel($id) {
-        return dbQ::setSelect($this->table)->filter('parent =', $id)->fetch();
+        return dbQ::setSelect($this->table)->filter('parent =', $id)->order('sort')->fetch();
     }
     
     public function getChildren ($parent) {

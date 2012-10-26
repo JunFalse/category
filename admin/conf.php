@@ -1,5 +1,5 @@
 <?php
 
 $options = array ();
-$options['category_table'] = 'category';
-$options['category_base_path'] = '/category';
+$options['table'] = 'category';
+$options['path'] = '/category';

@@ -17,8 +17,7 @@ class category {
         $this->table = $table;
     }
     
-    public function add ($values) {
-        
+    public function add ($values) {    
         $db = new db();
         return $db->insert($this->table, $values);
 
@@ -31,7 +30,6 @@ class category {
     
     public function update ($id, $values) {
         return dbQ::setUpdate($this->table)->setUpdateValues($values)->filter('id=', $id)->exec();
-
     }
     
     public function get($id) {
@@ -43,7 +41,7 @@ class category {
     }
     
     public function getChildren ($parent) {
-        return dbQ::setSelect($this->table)->filter('parent =', $parent)->fetch();
+        return dbQ::setSelect($this->table)->filter('parent =', $parent)->order('sort')->fetch();
     }
     
     public function getParent($id) {
@@ -109,6 +107,7 @@ class category {
         foreach ($top as $parent) {
             $set = array ();
             $set['optgroup'] = $parent['title'];
+            $set['id'] = $parent['id'];
             $set['options'] = $this->getChildren($parent['id']);
             $ary[] = $set;
 

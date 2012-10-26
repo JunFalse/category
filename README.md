@@ -11,11 +11,9 @@ the folloing in blog/admin/conf.php:
 
     <?php
 
-    $options = array ();
-    // the database table (will be created per auto)
-    $options['category_table'] = 'blog_category';
-    // the web base path to the module
-    $options['category_base_path'] = '/blog'; 
+    $options = array ();   
+    $options['table'] = 'shop_category';
+    $options['path'] = '/shop';
 
 ### Redbeans sets options for utf8 which can ruin you utf8
 

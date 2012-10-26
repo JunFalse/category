@@ -40,6 +40,15 @@ class category {
         return dbQ::setSelect($this->table)->filter('parent =', $id)->order('sort')->fetch();
     }
     
+    public function getLevelAsIds($id) {
+        $level = self::getLevel($id);
+        $ary = array ();
+        foreach ($level as $l) {
+            $ary[] = $l['id'];
+        }
+        return $ary;
+    }
+    
     public function getChildren ($parent) {
         return dbQ::setSelect($this->table)->filter('parent =', $parent)->order('sort')->fetch();
     }

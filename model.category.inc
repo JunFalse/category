@@ -24,7 +24,14 @@ class category {
     }
     
     public function delete ($id) {
-        return dbQ::setDelete($this->table)->filter('id =', $id)->exec();
+        db::begin();
+        event::getTriggerEvent(
+                config::getModuleIni('category_events'), array (
+                    'action' => 'category_delete',
+                    'id' => $id)
+                );
+        dbQ::setDelete($this->table)->filter('id =', $id)->exec();
+        db::commit();
       
     }
     

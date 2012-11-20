@@ -214,20 +214,23 @@ class categoryControl {
 
         echo $f->formAdd();
 
+        $func = function  ($id, $text) {
+            $edit = html::createLink(categoryControl::$options['path'] . "/admin/edit_cat/$id", lang::system('edit'));
+            $del = html::createLink(categoryControl::$options['path']  . "/admin/delete_cat/$id", lang::system('delete'));
+            $sub = html::createLink(categoryControl::$options['path']  ."/admin/add_sub/$id", lang::translate('category_add_sub'));
+            return $text  . " " . $edit . MENU_SUB_SEPARATOR . $del . MENU_SUB_SEPARATOR . $sub;
+        };
+        
         $options =
             array (
                 'table' => self::$options['table'], 
                 'title' => 'title',
                 'field' => 'sort',
-                'where_sql' => "`parent` = 0 "
+                'where_sql' => "`parent` = 0 ",
+                'function' => $func
              );
 
-        function jquerysort_template_item ($id, $text) {
-            $edit = html::createLink(categoryControl::$options['path'] . "/admin/edit_cat/$id", lang::system('edit'));
-            $del = html::createLink(categoryControl::$options['path']  . "/admin/delete_cat/$id", lang::system('delete'));
-            $sub = html::createLink(categoryControl::$options['path']  ."/admin/add_sub/$id", lang::translate('category_add_sub'));
-            return $text  . " " . $edit . MENU_SUB_SEPARATOR . $del . MENU_SUB_SEPARATOR . $sub;
-        } 
+        
 
         include_module('jquerysort');
         $j = new jquerysort($options);
@@ -261,16 +264,8 @@ class categoryControl {
         }
 
         echo $f->formAdd();
-        $options =
-            array (
-                'table' => self::$options['table'], 
-                'title' => 'title',
-                'field' => 'sort',
-                'where_sql' => "`parent` = $parent "
-             );
-
         
-        function jquerysort_template_item ($id, $text) {
+        $func = function ($id, $text) {
             $edit = html::createLink(categoryControl::$options['path']  . "/admin/edit_cat/$id", lang::system('edit'));
             $del = html::createLink(categoryControl::$options['path']  . "/admin/delete_cat/$id", lang::system('delete'));
             if (config::getModuleIni('category_allow_sub')) {
@@ -279,8 +274,17 @@ class categoryControl {
                 $sub = '';
             }
             return html::specialEncode($text) . " " . $edit . MENU_SUB_SEPARATOR . $del . $sub;
-        } 
+        } ;
         
+        
+        $options =
+            array (
+                'table' => self::$options['table'], 
+                'title' => 'title',
+                'field' => 'sort',
+                'where_sql' => "`parent` = $parent ",
+                'function' => $func
+             );
         
         include_module('jquerysort');
         $j = new jquerysort($options);

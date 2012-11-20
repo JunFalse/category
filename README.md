@@ -15,19 +15,16 @@ the folloing in blog/admin/conf.php:
     $options['table'] = 'shop_category';
     $options['path'] = '/shop';
 
-### Redbeans sets options for utf8 which can ruin you utf8
 
-To change this:  
+### Create table manual
 
-alter table shop_category change title title varchar(255) DEFAULT NULL;
+You will need a table which looks like this
 
-### Create able manual
-
-CREATE TABLE `shop_category` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) DEFAULT NULL,
-  `sort` tinyint(3) unsigned DEFAULT NULL,
-  `parent` tinyint(3) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
+    CREATE TABLE `shop_category` (
+        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `title` varchar(255) DEFAULT NULL,
+        `sort` tinyint(3) unsigned DEFAULT NULL,
+        `parent` tinyint(3) unsigned DEFAULT NULL,
+        PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB;
 

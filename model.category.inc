@@ -93,7 +93,6 @@ class category {
     }
     
     public function getTrailHTML ($id) {
-'';
         $trail = $this->getTrailHuman($id);      
         $str = '';    
         if (count($trail) == 0) {
@@ -230,8 +229,6 @@ class categoryControl {
                 'function' => $func
              );
 
-        
-
         include_module('jquerysort');
         $j = new jquerysort($options);
         $j->setJs();
@@ -240,7 +237,6 @@ class categoryControl {
     
     public function addSub () {
         headline_message(lang::translate('category_add_sub_title'));
-
 
         $parent = URI::getInstance()->fragment(3);
         $f = new categoryForm();
@@ -305,7 +301,6 @@ class categoryControl {
         if (isset($_POST['category_delete'])) {
 
             $children = $c->getChildren($id);
-
             if (!empty($children)) {
                 view_form_errors(lang::translate('category_error_has_children'));
             } else {
@@ -314,7 +309,6 @@ class categoryControl {
                 session::setActionMessage(lang::translate('category_deleted'));
                 http::locationHeader(self::$options['path'] . '/admin/add_cat');
             }
-
         }
         echo $f->formDelete(); 
     }
@@ -339,12 +333,10 @@ class categoryControl {
             } else {
                 log::debug('Should not happen');
             }
-
         }
 
         $values = $c->get($id);
         $values = html::specialEncode($values);
-
         echo $f->formUpdate($values);
     }
 }

@@ -130,6 +130,7 @@ class category {
         return $ary;
     }
     
+    
     public function exists ($id) {
         $ary = $this->getOptgroupArray();
         foreach ($ary as  $group) {
@@ -216,8 +217,15 @@ class categoryControl {
         $func = function  ($id, $text) {
             $edit = html::createLink(categoryControl::$options['path'] . "/admin/edit_cat/$id", lang::system('edit'));
             $del = html::createLink(categoryControl::$options['path']  . "/admin/delete_cat/$id", lang::system('delete'));
-            $sub = html::createLink(categoryControl::$options['path']  ."/admin/add_sub/$id", lang::translate('category_add_sub'));
-            return html::specialEncode($text)  . " " . $edit . MENU_SUB_SEPARATOR . $del . MENU_SUB_SEPARATOR . $sub;
+            
+            $str = html::specialEncode($text)  . " " . $edit . MENU_SUB_SEPARATOR . $del;
+            
+            if (!isset(categoryControl::$options['no_sub'])) {
+                $sub = html::createLink(categoryControl::$options['path']  ."/admin/add_sub/$id", lang::translate('category_add_sub'));
+                $str.= MENU_SUB_SEPARATOR . $sub;
+                
+            } 
+            return $str; 
         };
         
         $options =

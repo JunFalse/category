@@ -34,3 +34,11 @@ You will need a table which looks like this
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB;
 
+    CREATE TABLE `campaign_category` (
+        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `title` varchar(255) DEFAULT NULL,
+        `sort` tinyint(3) unsigned DEFAULT NULL,
+        `parent` tinyint(3) unsigned DEFAULT NULL,
+        PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB;
+

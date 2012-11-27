@@ -23,7 +23,7 @@ class category {
 
     }
     
-    public function delete ($id) {
+    public function delete ($id, $callback = null) {
         db::begin();
         event::getTriggerEvent(
                 config::getModuleIni('category_events'), array (

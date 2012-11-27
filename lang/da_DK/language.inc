@@ -21,3 +21,6 @@ $_COS_LANG_MODULE['category_delete_title'] = 'Slet kategori';
 $_COS_LANG_MODULE['category_form_delete_legend'] = 'Bekræft slettelse af kategori';
 $_COS_LANG_MODULE['category_add_sub'] = 'Tilføj under kategori';
 $_COS_LANG_MODULE['category_error_has_children'] = 'Slet først under kategorier';
+
+$_COS_LANG_MODULE['category_form_add_abstract'] = 'Abstrakt';
+$_COS_LANG_MODULE['category_form_add_description'] = 'Beskrivelse';

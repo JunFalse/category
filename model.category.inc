@@ -156,6 +156,15 @@ class categoryForm {
         $f->legend(lang::translate('category_form_add_legend'));
         $f->label('title', lang::translate('category_form_add_title'));
         $f->text('title');
+        
+        if (config::getModuleIni('category_extra')) {
+            $f->label('abstract', lang::translate('category_form_add_abstract'));
+            $f->text('abstract');
+            $f->label('abstract', lang::translate('category_form_add_description'));
+            $f->textareaSmall('abstract');
+            
+        }
+        
         $f->submit('category_add', lang::translate('category_form_add_submit'));
         $f->formEnd();
         echo $f->getStr();
@@ -173,6 +182,14 @@ class categoryForm {
         $f->legend(lang::translate('category_form_update_legend'));
         $f->label('title', lang::translate('category_form_title'));
         $f->text('title', null);
+        
+        if (config::getModuleIni('category_extra')) {
+            $f->label('abstract', lang::translate('category_form_add_abstract'));
+            $f->text('abstract');
+            $f->label('description', lang::translate('category_form_add_description'));
+            $f->textareaSmall('description');   
+        }
+        
         $f->submit('category_update', lang::translate('category_form_update_submit'));
         $f->formEnd();
         echo $f->getStr();
@@ -200,7 +217,7 @@ class categoryControl {
         if (isset($_POST['category_add'])) {
             $_POST = html::specialDecode($_POST);
             
-            $values = db::prepareToPostArray(array ('title'));
+            $values = db::prepareToPostArray(array ('title','abstract', 'description'));
             $values['sort'] = 255;
             $values['parent'] = 0;
             $res = $c->add($values);
@@ -255,7 +272,7 @@ class categoryControl {
         
         if (isset($_POST['category_add'])) {
             $_POST = html::specialDecode($_POST);
-            $values = db::prepareToPostArray(array ('title'));
+            $values = db::prepareToPostArray(array ('title','abstract', 'description'));
             $values['sort'] = 255;
             $values['parent'] = $parent;
             $res = $c->add($values);
@@ -333,7 +350,7 @@ class categoryControl {
 
         if (isset($_POST['category_update'])) {
             $_POST = html::specialDecode($_POST);
-            $values = db::prepareToPostArray(array ('title'));
+            $values = db::prepareToPostArray(array ('title','abstract', 'description'));
             $res = $c->update($id, $values);
             if ($res) {
                 session::setActionMessage(lang::translate('category_edit_action_message'));

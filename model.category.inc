@@ -18,8 +18,11 @@ class category {
     }
     
     public function add ($values) {    
-        $db = new db();
-        return $db->insert($this->table, $values);
+        //$db = new db();
+        $bean = rb::getBean($this->table);
+        $bean = rb::arrayToBean($bean, $values);
+        return R::store($bean);
+        //return $db->insert($this->table, $values);
 
     }
     
@@ -36,7 +39,10 @@ class category {
     }
     
     public function update ($id, $values) {
-        return dbQ::setUpdate($this->table)->setUpdateValues($values)->filter('id=', $id)->exec();
+        $bean = rb::getBean($this->table, 'id', $id);
+        $bean = rb::arrayToBean($bean, $values);
+        return R::store($bean);
+        //return dbQ::setUpdate($this->table)->setUpdateValues($values)->filter('id=', $id)->exec();
     }
     
     public function get($id) {

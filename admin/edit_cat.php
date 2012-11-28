@@ -1,7 +1,6 @@
 <?php
 
 if (!session::checkAccessControl('category_allow')){
-    moduleloader::setStatus(403);
     return;
 }
 

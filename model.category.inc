@@ -1,8 +1,8 @@
 <?php
 
-include_once "coslib/rb_helpers.php";
-include_once "coslib/form_helpers.php";
-RB::connect();
+//include_once "coslib/rb_helpers.php";
+include_once "coslib/formHelpers.php";
+cosRB::connect();
 
 
 class category {
@@ -19,8 +19,8 @@ class category {
     
     public function add ($values) {    
         //$db = new db();
-        $bean = rb::getBean($this->table);
-        $bean = rb::arrayToBean($bean, $values);
+        $bean = cosRB::getBean($this->table);
+        $bean = cosRB::arrayToBean($bean, $values);
         return R::store($bean);
         //return $db->insert($this->table, $values);
 
@@ -39,8 +39,8 @@ class category {
     }
     
     public function update ($id, $values) {
-        $bean = rb::getBean($this->table, 'id', $id);
-        $bean = rb::arrayToBean($bean, $values);
+        $bean = cosRB::getBean($this->table, 'id', $id);
+        $bean = cosRB::arrayToBean($bean, $values);
         return R::store($bean);
         //return dbQ::setUpdate($this->table)->setUpdateValues($values)->filter('id=', $id)->exec();
     }

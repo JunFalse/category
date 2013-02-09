@@ -212,7 +212,7 @@ class categoryControl {
     
     public function addParent () {
 
-        headline_message(lang::translate('category_add_title'));       
+        html::headline(lang::translate('category_add_title'));       
         
         $f = new categoryForm();
         $c = new category(self::$options);
@@ -267,7 +267,7 @@ class categoryControl {
     }
     
     public function addSub () {
-        headline_message(lang::translate('category_add_sub_title'));
+        html::headline(lang::translate('category_add_sub_title'));
 
         $parent = URI::getInstance()->fragment(3);
         $f = new categoryForm();
@@ -320,7 +320,7 @@ class categoryControl {
     }
     
     public function deleteCat () {
-        headline_message(lang::translate('category_delete_title'));
+        html::headline(lang::translate('category_delete_title'));
         $id = URI::getInstance()->fragment(3);
 
         $f = new categoryForm();
@@ -333,7 +333,7 @@ class categoryControl {
 
             $children = $c->getChildren($id);
             if (!empty($children)) {
-                view_form_errors(lang::translate('category_error_has_children'));
+                html::errors(lang::translate('category_error_has_children'));
             } else {
                 $values = db::prepareToPostArray(array ('title'));
                 $res = $c->delete($id);
@@ -345,7 +345,7 @@ class categoryControl {
     }
     
     public function editCat () {
-        headline_message(lang::translate('category_edit_title'));
+        html::headline(lang::translate('category_edit_title'));
         $id = URI::getInstance()->fragment(3);
 
         $f = new categoryForm();

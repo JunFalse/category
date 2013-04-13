@@ -1,9 +1,6 @@
 <?php
 
-//include_once "coslib/rb_helpers.php";
-include_once "coslib/formHelpers.php";
 cosRB::connect();
-
 
 class category {
     

@@ -30,7 +30,7 @@ class category {
                     'action' => 'category_delete',
                     'id' => $id)
                 );
-        dbQ::setDelete($this->table)->filter('id =', $id)->exec();
+        db_q::setDelete($this->table)->filter('id =', $id)->exec();
         db::commit();
       
     }
@@ -43,11 +43,11 @@ class category {
     }
     
     public function get($id) {
-        return dbQ::setSelect($this->table)->filter('id = ', $id)->fetchSingle();
+        return db_q::setSelect($this->table)->filter('id = ', $id)->fetchSingle();
     }
     
     public function getLevel($id) {
-        return dbQ::setSelect($this->table)->filter('parent =', $id)->order('sort')->fetch();
+        return db_q::setSelect($this->table)->filter('parent =', $id)->order('sort')->fetch();
     }
     
     public function getLevelAsIds($id) {
@@ -60,11 +60,11 @@ class category {
     }
     
     public function getChildren ($parent) {
-        return dbQ::setSelect($this->table)->filter('parent =', $parent)->order('sort')->fetch();
+        return db_q::setSelect($this->table)->filter('parent =', $parent)->order('sort')->fetch();
     }
     
     public function getParent($id) {
-        $row = dbQ::setSelect($this->table)->filter('id =', $id)->fetchSingle();
+        $row = db_q::setSelect($this->table)->filter('id =', $id)->fetchSingle();
         if (empty($row)) {
             return 0;
         }

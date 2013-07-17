@@ -174,7 +174,7 @@ class categoryForm {
     }
     
     public function formDelete () {
-        echo formHelpers::confirmDeleteForm('category_delete', lang::translate('category_form_delete_legend'));
+        echo html_helpers::confirmDeleteForm('category_delete', lang::translate('category_form_delete_legend'));
     }
     
     public function formUpdate ($values) {

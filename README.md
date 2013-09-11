@@ -11,9 +11,9 @@ admin folder and then edit the admin/conf.php file.
 
 ### Usage
 
-If you are using the module in e.g. a module called blog you 
+If you are using the module in e.g. a module called shop you 
 will need to set the following two values to something like
-the folloing in blog/admin/conf.php:
+the following in shop/admin/conf.php:
 
     <?php
 
@@ -34,11 +34,4 @@ You will need a table which looks like this
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB;
 
-    CREATE TABLE `campaign_category` (
-        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-        `title` varchar(255) DEFAULT NULL,
-        `sort` tinyint(3) unsigned DEFAULT NULL,
-        `parent` tinyint(3) unsigned DEFAULT NULL,
-        PRIMARY KEY (`id`)
-    ) ENGINE=InnoDB;
 

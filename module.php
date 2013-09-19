@@ -156,25 +156,25 @@ class categoryForm {
         $f = new html();
         $f->init(null, 'category_add');
         $f->formStart();
-        $f->legend(lang::translate('category_form_add_legend'));
-        $f->label('title', lang::translate('category_form_add_title'));
+        $f->legend(lang::translate('Add category'));
+        $f->label('title', lang::translate('Title'));
         $f->text('title');
         
         if (config::getModuleIni('category_extra')) {
-            $f->label('abstract', lang::translate('category_form_add_abstract'));
+            $f->label('abstract', lang::translate('Abstract'));
             $f->text('abstract');
-            $f->label('abstract', lang::translate('category_form_add_description'));
+            $f->label('abstract', lang::translate('Description'));
             $f->textareaSmall('abstract');
             
         }
         
-        $f->submit('category_add', lang::translate('category_form_add_submit'));
+        $f->submit('category_add', lang::translate('Add'));
         $f->formEnd();
         echo $f->getStr();
     }
     
     public function formDelete () {
-        echo html_helpers::confirmDeleteForm('category_delete', lang::translate('category_form_delete_legend'));
+        echo html_helpers::confirmDeleteForm('category_delete', lang::translate('Delete category'));
     }
     
     public function formUpdate ($values) {
@@ -182,18 +182,18 @@ class categoryForm {
         $f = new html();
         $f->init($values, 'category_update');
         $f->formStart();
-        $f->legend(lang::translate('category_form_update_legend'));
-        $f->label('title', lang::translate('category_form_title'));
+        $f->legend(lang::translate('Edit category'));
+        $f->label('title', lang::translate('Title'));
         $f->text('title', null);
         
         if (config::getModuleIni('category_extra')) {
-            $f->label('abstract', lang::translate('category_form_add_abstract'));
+            $f->label('abstract', lang::translate('Abstract'));
             $f->text('abstract');
-            $f->label('description', lang::translate('category_form_add_description'));
+            $f->label('description', lang::translate('Description'));
             $f->textareaSmall('description');   
         }
         
-        $f->submit('category_update', lang::translate('category_form_update_submit'));
+        $f->submit('category_update', lang::translate('Send'));
         $f->formEnd();
         echo $f->getStr();
     }    
@@ -209,7 +209,7 @@ class categoryControl {
     
     public function addParent () {
 
-        html::headline(lang::translate('category_add_title'));       
+        html::headline(lang::translate('Add category'));       
         
         $f = new categoryForm();
         $c = new category(self::$options);
@@ -225,7 +225,8 @@ class categoryControl {
             $values['parent'] = 0;
             $res = $c->add($values);
             if ($res) {
-                session::setActionMessage(lang::translate('category_add_action'));
+                session::setActionMessage(
+                        lang::translate('Category has been added'));
                 http::locationHeader(self::$options['path'] . '/admin/add_cat');
             } else {
 
@@ -235,13 +236,19 @@ class categoryControl {
         echo $f->formAdd();
 
         $func = function  ($id, $text) {
-            $edit = html::createLink(categoryControl::$options['path'] . "/admin/edit_cat/$id", lang::system('edit'));
-            $del = html::createLink(categoryControl::$options['path']  . "/admin/delete_cat/$id", lang::system('delete'));
+            $edit = html::createLink(
+                    categoryControl::$options['path'] . "/admin/edit_cat/$id", 
+                    lang::translate('Edit'));
+            $del = html::createLink(
+                    categoryControl::$options['path']  . "/admin/delete_cat/$id", 
+                    lang::translate('Delete'));
             
             $str = html::specialEncode($text)  . " " . $edit . MENU_SUB_SEPARATOR . $del;
             
             if (!isset(categoryControl::$options['no_sub'])) {
-                $sub = html::createLink(categoryControl::$options['path']  ."/admin/add_sub/$id", lang::translate('category_add_sub'));
+                $sub = html::createLink(
+                        categoryControl::$options['path']  ."/admin/add_sub/$id", 
+                        lang::translate('Add sub category'));
                 $str.= MENU_SUB_SEPARATOR . $sub;
                 
             } 
@@ -264,7 +271,7 @@ class categoryControl {
     }
     
     public function addSub () {
-        html::headline(lang::translate('category_add_sub_title'));
+        html::headline(lang::translate('Add sub category'));
 
         $parent = URI::getInstance()->fragment(3);
         $f = new categoryForm();
@@ -280,7 +287,7 @@ class categoryControl {
             $values['parent'] = $parent;
             $res = $c->add($values);
             if ($res) {
-                session::setActionMessage(lang::translate('category_add_sub_action'));
+                session::setActionMessage(lang::translate('Sub category has been added'));
                 http::locationHeader($_SERVER['REQUEST_URI']);
             } else {
 
@@ -290,10 +297,18 @@ class categoryControl {
         echo $f->formAdd();
         
         $func = function ($id, $text) {
-            $edit = html::createLink(categoryControl::$options['path']  . "/admin/edit_cat/$id", lang::system('edit'));
-            $del = html::createLink(categoryControl::$options['path']  . "/admin/delete_cat/$id", lang::system('delete'));
+            $edit = html::createLink(
+                    categoryControl::$options['path']  . "/admin/edit_cat/$id", 
+                    lang::translate('Edit'));
+            $del = html::createLink(
+                    categoryControl::$options['path']  . "/admin/delete_cat/$id", 
+                    lang::system('Delete'));
             if (config::getModuleIni('category_allow_sub')) {
-                $sub = MENU_SUB_SEPARATOR . html::createLink(categoryControl::$options['path']  . "/admin/add_sub/$id", lang::translate('category_add_sub'));
+                $sub = MENU_SUB_SEPARATOR . 
+                        html::createLink(
+                                categoryControl::$options['path']  . "/admin/add_sub/$id", 
+                                lang::translate('Add sub category')
+                        );
             } else {
                 $sub = '';
             }
@@ -317,7 +332,7 @@ class categoryControl {
     }
     
     public function deleteCat () {
-        html::headline(lang::translate('category_delete_title'));
+        html::headline(lang::translate('Delete category'));
         $id = URI::getInstance()->fragment(3);
 
         $f = new categoryForm();
@@ -330,11 +345,11 @@ class categoryControl {
 
             $children = $c->getChildren($id);
             if (!empty($children)) {
-                html::errors(lang::translate('category_error_has_children'));
+                html::errors(lang::translate('Category has sub categories'));
             } else {
                 $values = db::prepareToPostArray(array ('title'));
                 $res = $c->delete($id);
-                session::setActionMessage(lang::translate('category_deleted'));
+                session::setActionMessage(lang::translate('Category has been deleted'));
                 http::locationHeader(self::$options['path'] . '/admin/add_cat');
             }
         }
@@ -342,7 +357,7 @@ class categoryControl {
     }
     
     public function editCat () {
-        html::headline(lang::translate('category_edit_title'));
+        html::headline(lang::translate('Edit category'));
         $id = URI::getInstance()->fragment(3);
 
         $f = new categoryForm();
@@ -356,7 +371,7 @@ class categoryControl {
             $values = db::prepareToPostArray(array ('title','abstract', 'description'));
             $res = $c->update($id, $values);
             if ($res) {
-                session::setActionMessage(lang::translate('category_edit_action_message'));
+                session::setActionMessage(lang::translate('Category has been updated'));
                 http::locationHeader($_SERVER['REQUEST_URI']);
             } else {
                 log::debug('Should not happen');

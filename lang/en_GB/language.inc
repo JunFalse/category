@@ -1,26 +1,20 @@
 <?php
 
-$_COS_LANG_MODULE = array ();
+// Translation of file /home/dennis/www/sweetpoints/modules/category/module.php
 
-
-$_COS_LANG_MODULE['category_add_title'] = 'Add category';
-$_COS_LANG_MODULE['category_add_action'] = 'Category added';
-$_COS_LANG_MODULE['category_add_sub_title'] = 'Add sub category';
-$_COS_LANG_MODULE['category_add_sub_action'] = 'Sub category added';
-$_COS_LANG_MODULE['category_deleted'] = 'Category deleted';
-$_COS_LANG_MODULE['category_edit_title'] = 'Edit category';
-$_COS_LANG_MODULE['category_edit_action_message'] = 'Category updated';
-$_COS_LANG_MODULE['category_form_add_legend'] = 'Add kategory';
-$_COS_LANG_MODULE['category_form_add_title'] = 'Title';
-$_COS_LANG_MODULE['category_form_add_submit'] = 'Add';
-$_COS_LANG_MODULE['category_form_delete_submit'] = 'Delete';
-$_COS_LANG_MODULE['category_form_update_legend'] = 'Update category';
-$_COS_LANG_MODULE['category_form_title'] = 'Add category';
-$_COS_LANG_MODULE['category_form_update_submit'] = 'Update';
-$_COS_LANG_MODULE['category_delete_title'] = 'Delete category';
-$_COS_LANG_MODULE['category_form_delete_legend'] = 'Confirm delete category';
-$_COS_LANG_MODULE['category_add_sub'] = 'Add sub category';
-$_COS_LANG_MODULE['category_error_has_children'] = 'You will need to first delete sub categories';
-
-$_COS_LANG_MODULE['category_form_add_abstract'] = 'Abstract';
-$_COS_LANG_MODULE['category_form_add_description'] = 'Description';
+$_COS_LANG_MODULE['Add category'] = 'Add category';
+$_COS_LANG_MODULE['Title'] = 'Title';
+$_COS_LANG_MODULE['Abstract'] = 'Abstract';
+$_COS_LANG_MODULE['Description'] = 'Description';
+$_COS_LANG_MODULE['Add'] = 'Add';
+$_COS_LANG_MODULE['Delete category'] = 'Delete category';
+$_COS_LANG_MODULE['Edit category'] = 'Edit category';
+$_COS_LANG_MODULE['Send'] = 'Send';
+$_COS_LANG_MODULE['Category has been added'] = 'Category has been added';
+$_COS_LANG_MODULE['Edit'] = 'Edit';
+$_COS_LANG_MODULE['Delete'] = 'Delete';
+$_COS_LANG_MODULE['Add sub category'] = 'Add sub category';
+$_COS_LANG_MODULE['Sub category has been added'] = 'Sub category has been added';
+$_COS_LANG_MODULE['Category has sub categories'] = 'Category has sub categories';
+$_COS_LANG_MODULE['Category has been deleted'] = 'Category has been deleted';
+$_COS_LANG_MODULE['Category has been updated'] = 'Category has been updated';

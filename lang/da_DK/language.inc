@@ -1,5 +1,8 @@
 <?php
 
+
+// Translation of file /modules/category/module.php
+
 $_COS_LANG_MODULE['Add category'] = 'Tilføj kategori';
 $_COS_LANG_MODULE['Title'] = 'Titel';
 $_COS_LANG_MODULE['Abstract'] = 'Abstrakt';

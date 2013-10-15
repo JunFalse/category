@@ -1,6 +1,6 @@
 <?php
 
-if (!session::checkAccessControl('category_allow')){
+if (!session::checkAccessFromModuleIni('category_allow')){
     return;
 }
 

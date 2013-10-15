@@ -1,7 +1,5 @@
 <?php
 
-// Translation of file /home/dennis/www/sweetpoints/modules/category/module.php
-
 $_COS_LANG_MODULE['Add category'] = 'Add category';
 $_COS_LANG_MODULE['Title'] = 'Title';
 $_COS_LANG_MODULE['Abstract'] = 'Abstract';

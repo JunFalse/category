@@ -1,6 +1,6 @@
 <?php
 
-cosRB::connect();
+db_rb::connect();
 
 class category {
     
@@ -16,8 +16,8 @@ class category {
     
     public function add ($values) {    
         //$db = new db();
-        $bean = cosRB::getBean($this->table);
-        $bean = cosRB::arrayToBean($bean, $values);
+        $bean = db_rb::getBean($this->table);
+        $bean = db_rb::arrayToBean($bean, $values);
         return R::store($bean);
         //return $db->insert($this->table, $values);
 
@@ -36,8 +36,8 @@ class category {
     }
     
     public function update ($id, $values) {
-        $bean = cosRB::getBean($this->table, 'id', $id);
-        $bean = cosRB::arrayToBean($bean, $values);
+        $bean = db_rb::getBean($this->table, 'id', $id);
+        $bean = db_rb::arrayToBean($bean, $values);
         return R::store($bean);
         //return dbQ::setUpdate($this->table)->setUpdateValues($values)->filter('id=', $id)->exec();
     }
